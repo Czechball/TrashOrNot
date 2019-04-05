@@ -1,11 +1,4 @@
 #!/bin/bash
-
-Splash()
-{
-	printf "((	TrashOrNot				))\n";
-	printf "((	Skript pro zjišťování stavu disků\	))";
-	printf "((	Vytvořil David Jenne pro Elektroodpad Vysočany	))\n";
-}
 CheckDisks()
 {
 read -n1 -r -p "Odpoj všechny testovací disky a zmáčkni [ENTER]" key
@@ -112,7 +105,6 @@ cutpos2=8
 
 clear
 CheckDisks
-#Splash
 WaitDisk
 ReadSmart
 CheckSmart
