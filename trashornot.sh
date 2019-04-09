@@ -20,10 +20,15 @@ printf "Skenování systémových disků...\n"
 		check=$(echo "$checkafter" | tr -d "$checkbefore")
 		printf "Zjištěné ID testovacího disku: sd$check\n"
 		diskletter="$check"
+		if ! udevadm info --query=all --name=sd$diskletter | grep ata
+		then
+			printf "\e[31mCHYBA:\e[0m Připojené zařízení není hard disk.\n"
+			error
+		fi
 		sleep 2
 	else
 		echo
-	    exit
+	    error
 	fi
 }
 WaitDisk()
@@ -82,7 +87,7 @@ CheckSmart()
 DeleteDisk ()
 {
 	printf "Vymazávání tabulky oddílů...\n"
-	if(sudo wipefs /dev/sd$diskletter -faq)
+	if sudo wipefs /dev/sd$diskletter -faq
 	then
 		printf "Tabulka oddílů vymazána."
 	else
@@ -99,7 +104,7 @@ RepeatPrompt()
 	    Repeat
 	else
 		echo
-	    exit
+	    error
 	fi
 }
 Repeat()
@@ -111,13 +116,16 @@ Repeat()
 	DeleteDisk
 	RepeatPrompt
 }
-
+error ()
+{
+	exit
+}
 chars="/-\|"
 cutpos=9
 cutpos2=8
 
 clear
-printf "\e[31mVAROVÁNÍ:\e[0m Tento skript vymaže veškeré oddíly na testovaném disku.\nBuď opatrný."
+printf "\e[31mVAROVÁNÍ:\e[0m Tento skript vymaže veškeré oddíly na testovaném disku.\nBuď opatrný.\n"
 CheckDisks
 WaitDisk
 ReadSmart
