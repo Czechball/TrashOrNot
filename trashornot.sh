@@ -79,6 +79,18 @@ CheckSmart()
 		:
 	fi
 }
+DeleteDisk ()
+{
+	printf "Vymazávání tabulky oddílů...\n"
+	if(sudo wipefs /dev/sd$diskletter -faq)
+	then
+		printf "Tabulka oddílů vymazána."
+	else
+		printf "Chyba: Nepodařilo se vymazat tabulku oddílů. Restartování skriptu...\n"
+		sleep 2
+		Repeat
+	fi
+}
 RepeatPrompt()
 {
 	echo
@@ -96,6 +108,7 @@ Repeat()
 	WaitDisk
 	ReadSmart
 	CheckSmart
+	DeleteDisk
 	RepeatPrompt
 }
 
@@ -104,8 +117,10 @@ cutpos=9
 cutpos2=8
 
 clear
+printf "\e[31mVAROVÁNÍ:\e[0m Tento skript vymaže veškeré oddíly na testovaném disku.\nBuď opatrný."
 CheckDisks
 WaitDisk
 ReadSmart
 CheckSmart
+DeleteDisk
 RepeatPrompt
